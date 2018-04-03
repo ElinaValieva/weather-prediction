@@ -1,9 +1,12 @@
 import requests
 import math
 from datetime import datetime, time, date
+import weatherPredictor
 
 apiKey = "45b7a8b65841193a9b57eaf237df1693"
-citys = ["oselki", "kipen", "pavlovsk", "peterhof", "lisiy nos", "kronstadt", "kolpino", "vyborg", "saint petersburg"]
+citys = ["oselki", "kipen", "pavlovsk", "peterhof", "lisiy nos", "kronstadt", "kolpino", "vyborg"]
+filenameTest = 'wx_test'
+filenamePrediction = 'wy_test'
 
 # function to download data from api.openweathermap
 def getData(city):
@@ -45,11 +48,19 @@ def convertDeg(deg):
 
 def addToDS(result, filename):
     file = open(filename, 'a')
-    file.write(result)
+    file.write('\n'+ result)
     file.close()
 
 
-result = ""
+test = ""
 for i in range (0, len(citys)):
-    result = getData(citys[i]) + result;
+    if (test == ""):
+        test = getData(citys[i])
+    else:
+        test = test + ";" + getData(citys[i])
+addToDS(test, filenameTest);
+prediction = getData("saint petersburg");
+addToDS(prediction, filenamePrediction)
+weatherPredictor.predict()
+
 
