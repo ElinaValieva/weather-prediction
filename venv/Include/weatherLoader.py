@@ -43,8 +43,13 @@ def convertDeg(deg):
         result = 0
     return result
 
+def addToDS(result, filename):
+    file = open(filename, 'a')
+    file.write(result)
+    file.close()
+
+
 result = ""
 for i in range (0, len(citys)):
     result = getData(citys[i]) + result;
 
-print(result)
