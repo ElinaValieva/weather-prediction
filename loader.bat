@@ -1,0 +1,1 @@
+start C:\Users\Elina\PycharmProjects\weather-prediction-\venv\Scripts\python.exe -i C:\Users\Elina\PycharmProjects\weather-prediction-\venv\Include\weatherLoader.py

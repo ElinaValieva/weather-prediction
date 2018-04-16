@@ -42,5 +42,3 @@ def predict():
     #         pred[i][j] = int(pred[i][j])
     # print(pred)
     return pred
-
-predict()
