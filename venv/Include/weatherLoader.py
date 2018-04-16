@@ -74,6 +74,7 @@ def addToDS(result, filename):
     file.write('\n'+ result)
     file.close()
 
+
 def func(test):
     for j in range (0, len(test[0])):
         result = ""
@@ -84,7 +85,7 @@ def func(test):
                 result = test[k][j]
         addToDS(result, filenameTest)
 
-#основное
+
 test = []
 for i in range (0, len(citys)):
         test.append(getData(citys[i]))
@@ -92,6 +93,7 @@ prediction = getData("saint petersburg")
 func(test)
 for i in range (0, len(prediction)):
     addToDS(prediction[i], filenamePrediction)
+#prediction
 weatherPredictor.predict()
 
 
