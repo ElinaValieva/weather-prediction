@@ -84,9 +84,7 @@ def func(test):
                 result = test[k][j]
         addToDS(result, filenameTest)
 
-
-
-
+#основное
 test = []
 for i in range (0, len(citys)):
         test.append(getData(citys[i]))
