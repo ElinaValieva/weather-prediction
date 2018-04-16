@@ -6,6 +6,7 @@ from datetime import datetime, time, date
 citys = ["oselki", "kipen", "pavlovsk", "peterhof", "lisiy nos", "kronstadt", "kolpino", "vyborg"]
 filenameTest = 'wx_test'
 filenamePrediction = 'wy_test'
+day = datetime.now().date().day
 
 # function to download data from api.openweathermap
 def getData(city):
@@ -20,7 +21,7 @@ def getData(city):
     speed = 0
     result = []
     for i in range(0, len(tmp)):
-        if (i % 5 != 0 and i != 0):
+        if (i % 5 != 0 or i == 0):
             tempF = tmp[i]['main']['temp']
             temp = temp + math.ceil((tempF - 273.15) / 1.8)
             pressure = pressure + tmp[i]['main']['pressure']
@@ -33,13 +34,14 @@ def getData(city):
             clouds = math.ceil(clouds /5)
             deg = math.ceil(deg /5)
             speed = math.ceil(speed /5)
-            st = str(temp) + ";" + str(pressure) + ";" + str(clouds) + ";" + str(deg) + ";" + str(speed)
+            st = str(day) + ";" + str(temp) + ";" + str(pressure) + ";" + str(clouds) + ";" + str(deg) + ";" + str(speed)
             result.append(st)
             temp = 0
             pressure = 0
             clouds = 0
             deg = 0
             speed = 0
+            day = day + 1
     return result
 
 def convertDeg(deg):

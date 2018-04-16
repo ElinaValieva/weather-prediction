@@ -3,25 +3,48 @@ import math
 from datetime import datetime, time, date
 import weatherPredictor
 
-apiKey = "45b7a8b65841193a9b57eaf237df1693"
+
+# function to download data from api.openweathermap
 citys = ["oselki", "kipen", "pavlovsk", "peterhof", "lisiy nos", "kronstadt", "kolpino", "vyborg"]
 filenameTest = 'wx_test'
 filenamePrediction = 'wy_test'
+day = datetime.now().date().day
 
 # function to download data from api.openweathermap
 def getData(city):
-    request = requests.get("http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=45b7a8b65841193a9b57eaf237df1693")
+    request = requests.get("http://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid=45b7a8b65841193a9b57eaf237df1693")
     data = request.json()
     day = datetime.now().date().day
-    temp = data['main']['temp']
-    temp = math.ceil((temp -273.15)/1.8) #convert from Kelvin to Celsia
-    pressure = data['main']['pressure']
-    clouds = 1 if (data['clouds']['all'] > 50) else 0
-    deg = convertDeg(data['wind']['deg'])
-    speed = data['wind']['speed']
-    result = str(day) + ";" + str(temp) + ";" + str(pressure) + ";" + str(clouds) + ";" + str(deg) + ";" + str(speed)
+    tmp = data['list']
+    temp = 0
+    pressure = 0
+    clouds = 0
+    deg = 0
+    speed = 0
+    result = []
+    for i in range(0, len(tmp)):
+        if (i % 5 != 0 or i == 0):
+            tempF = tmp[i]['main']['temp']
+            temp = temp + math.ceil((tempF - 273.15) / 1.8)
+            pressure = pressure + tmp[i]['main']['pressure']
+            clouds = (1 if (tmp[i]['clouds']['all'] > 50) else 0) + clouds
+            deg = deg + convertDeg(tmp[i]['wind']['deg'])
+            speed = speed + tmp[i]['wind']['speed']
+        else:
+            temp = math.ceil(temp / 5)
+            pressure = math.ceil(pressure / 5)
+            clouds = math.ceil(clouds /5)
+            deg = math.ceil(deg /5)
+            speed = math.ceil(speed /5)
+            st = str(day) + ";" + str(temp) + ";" + str(pressure) + ";" + str(clouds) + ";" + str(deg) + ";" + str(speed)
+            result.append(st)
+            temp = 0
+            pressure = 0
+            clouds = 0
+            deg = 0
+            speed = 0
+            day = day + 1
     return result
-
 
 # function to convert to num destination wind
 # 0 - не существует, 1 - Штиль, 2 - Ю, 3 - ЮЗ, 4 - З, 5 - СЗ, 6 - С, 7 - СВ, 8 - В, 9 - ЮВ
@@ -51,16 +74,26 @@ def addToDS(result, filename):
     file.write('\n'+ result)
     file.close()
 
+def func(test):
+    for j in range (0, len(test[0])):
+        result = ""
+        for k in range (0, len(test)):
+            if (result != ""):
+                result = result + ";" + test[k][j]
+            else:
+                result = test[k][j]
+        addToDS(result, filenameTest)
 
-test = ""
+
+
+
+test = []
 for i in range (0, len(citys)):
-    if (test == ""):
-        test = getData(citys[i])
-    else:
-        test = test + ";" + getData(citys[i])
-addToDS(test, filenameTest);
-prediction = getData("saint petersburg");
-addToDS(prediction, filenamePrediction)
+        test.append(getData(citys[i]))
+prediction = getData("saint petersburg")
+func(test)
+for i in range (0, len(prediction)):
+    addToDS(prediction[i], filenamePrediction)
 weatherPredictor.predict()
 
 
