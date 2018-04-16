@@ -21,3 +21,7 @@ def predict():
     pred = model.predict(x_test)
     mse, mae = model.evaluate(x_test, y_test, verbose=0)
     print("Средняя абсолютная ошибка :", mae)
+    print(pred)
+    return pred
+
+predict()
