@@ -1,6 +1,7 @@
 import numpy as np
 import codecs
 import h5py
+import math
 from keras.models import model_from_json
 from io import BytesIO
 import matplotlib.pylab as plt
@@ -36,7 +37,10 @@ def predict():
     loaded_model.compile(loss="categorical_crossentropy", optimizer="SGD", metrics=["accuracy"])
     scores = loaded_model.evaluate(x_test, y_test, verbose=0)
     pred = loaded_model.predict(x_test)
-    print(pred)
+    # for i in range (0, len(pred)):
+    #     for j in range (0, len(pred[i])):
+    #         pred[i][j] = int(pred[i][j])
+    # print(pred)
     return pred
 
 predict()
