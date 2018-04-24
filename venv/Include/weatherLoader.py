@@ -2,6 +2,9 @@ import requests
 import math
 from datetime import datetime, time, date
 import weatherPredictor
+import warnings
+
+warnings.filterwarnings('ignore', '.*do not.*',)
 
 
 # function to download data from api.openweathermap
