@@ -9,11 +9,12 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
 from keras import optimizers
 
+
 def predict():
-    x_train=np.genfromtxt('wx_train',delimiter=';',dtype = int)
-    y_train=np.genfromtxt('wy_train',delimiter=';', dtype=int)
-    x_test=np.genfromtxt('wx_test',delimiter=';', dtype=float)
-    y_test=np.genfromtxt('wy_test',delimiter=';', dtype=float)
+    x_train = np.genfromtxt('wx_train', delimiter=';', dtype=int)
+    y_train = np.genfromtxt('wy_train', delimiter=';', dtype=int)
+    x_test = np.genfromtxt('wx_test', delimiter=';', dtype=float)
+    y_test = np.genfromtxt('wy_test', delimiter=';', dtype=float)
 
     # model = Sequential()
     # model.add(Dense(512, activation='relu', input_shape=(x_train.shape[1],), kernel_initializer="normal"))
@@ -27,7 +28,6 @@ def predict():
     # json_file.write(model_json)
     # json_file.close()
     # model.save_weights("mnist_model.h5")
-
 
     json_file = open("mnist_model.json", "r")
     loaded_model_json = json_file.read()
