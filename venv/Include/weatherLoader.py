@@ -5,9 +5,19 @@ import weatherPredictor
 import warnings
 
 warnings.filterwarnings('ignore', '.*do not.*', )
-
+# 498817 - Spb
+# 475060 - Oselki
+# 504875 - Kipen
+# 512053 - Pavlovsk
+# 510291 - Peterhof
+# 534841 - Lisiy nos
+# 540771 - Kronstadt
+# 546105 - Kolpino
+# 470546 - Vyborg
 # function to download data from api.openweathermap
 citys = ["oselki", "kipen", "pavlovsk", "peterhof", "lisiy nos", "kronstadt", "kolpino", "vyborg"]
+citysId = [475060, 504875, 512053, 510291, 534841, 540771, 546105, 470546];
+mainCityId = 498817;
 filenameTest = 'wx_test'
 filenamePrediction = 'wy_test'
 day = datetime.now().date().day
@@ -16,7 +26,8 @@ day = datetime.now().date().day
 # function to download data from api.openweathermap
 def getData(city):
     request = requests.get(
-        "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=45b7a8b65841193a9b57eaf237df1693")
+        # "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=45b7a8b65841193a9b57eaf237df1693")
+        "http://api.openweathermap.org/data/2.5/forecast?id=" + str(city) + "&appid=45b7a8b65841193a9b57eaf237df1693")
     data = request.json()
     day = datetime.now().date().day
     tmp = data['list']
@@ -27,28 +38,19 @@ def getData(city):
     speed = 0
     result = []
     for i in range(0, len(tmp)):
-        if (i % 5 != 0 or i == 0):
+        dt = tmp[i]['dt_txt'];
+        date_dt = find_date(dt)
+        time_dt = find_time(dt)
+        if (time_dt == '15'):
             tempF = tmp[i]['main']['temp']
-            temp = temp + math.ceil((tempF - 273.15) / 1.8)
-            pressure = pressure + tmp[i]['main']['pressure']
+            temp = math.ceil(tempF - 273.15)
+            pressure = math.ceil(tmp[i]['main']['pressure'])
             clouds = (1 if (tmp[i]['clouds']['all'] > 50) else 0) + clouds
-            deg = deg + convertDeg(tmp[i]['wind']['deg'])
-            speed = speed + tmp[i]['wind']['speed']
-        else:
-            temp = math.ceil(temp / 5)
-            pressure = math.ceil(pressure / 5)
-            clouds = math.ceil(clouds / 5)
-            deg = math.ceil(deg / 5)
-            speed = math.ceil(speed / 5)
-            st = str(day) + ";" + str(temp) + ";" + str(pressure) + ";" + str(clouds) + ";" + str(deg) + ";" + str(
+            deg = convertDeg(tmp[i]['wind']['deg'])
+            speed = math.ceil(tmp[i]['wind']['speed'])
+            st = str(date_dt) + ";" + str(temp) + ";" + str(pressure) + ";" + str(clouds) + ";" + str(deg) + ";" + str(
                 speed)
             result.append(st)
-            temp = 0
-            pressure = 0
-            clouds = 0
-            deg = 0
-            speed = 0
-            day = day + 1
     return result
 
 
@@ -93,10 +95,31 @@ def func(test):
         addToDS(result, filenameTest)
 
 
+def find_date(dt):
+    date = dt[:dt.find(' ')]
+    date = date[str(date).find('-'):]
+    date = date[1:]
+    date = date[str(date).find('-'):]
+    date = date[1:]
+    if (date[0] == '0'):
+        date = date[1:]
+    return date
+
+
+def find_time(dt):
+    time = dt[dt.find(' '):]
+    time = time[:str(time).find(':')]
+    time = time[1:]
+    return time
+
+
 test = []
-for i in range(0, len(citys)):
-    test.append(getData(citys[i]))
-prediction = getData("saint petersburg")
+# for i in range(0, len(citys)):
+#    test.append(getData(citys[i]))
+for i in range(0, len(citysId)):
+    test.append(getData(citysId[i]))
+# prediction = getData("saint petersburg")
+prediction = getData(mainCityId)
 func(test)
 for i in range(0, len(prediction)):
     addToDS(prediction[i], filenamePrediction)
